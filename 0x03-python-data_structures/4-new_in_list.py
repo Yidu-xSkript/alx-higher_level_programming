@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 def new_in_list(my_list, idx, element):
-    newlist = []
-    for i in range(0, len(my_list)):
-        newlist.append(my_list[i])
-    if idx < 0 or idx >= len(newlist):
-        return newlist
-    newlist[idx-1] = element
-    return newlist
+    new_list = []
+    new_list += my_list
+    if idx < 0 or idx >= len(my_list):
+        return(new_list)
+    else:
+        new_list[idx] = element
+        return(new_list)
