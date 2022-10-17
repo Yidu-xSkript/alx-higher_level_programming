@@ -18,85 +18,109 @@ if type(N) is not int:
 if N < 4:
     print("N must be at least 4")
     exit(1)
-  
-""" ld is an array where its indices indicate row-col+N-1 
-(N-1) is for shifting the difference to store negative 
-indices """
-ld = [0] * 30
-  
-""" rd is an array where its indices indicate row+col 
-and used to check whether a queen can be placed on 
-right diagonal or not"""
-rd = [0] * 30
-  
-"""column array where its indices indicates column and 
-used to check whether a queen can be placed in that 
-    row or not"""
-cl = [0] * 30
-  
-""" A utility function to print solution """
-def printSolution(board): 
-    for i in range(N):
-        for j in range(N):
-            print(board[i][j], end = " ")
-        print() 
-  
-""" A recursive utility function to solve N 
-Queen problem """
-def solveNQUtil(board, col): 
-      
-    """ base case: If all queens are placed
-        then return True """
-    if (col >= N):
-        return True
-          
-    """ Consider this column and try placing
-        this queen in all rows one by one """
-    for i in range(N):
-          
-        """ Check if the queen can be placed on board[i][col] """
-        """ A check if a queen can be placed on board[row][col].
-        We just need to check ld[row-col+n-1] and rd[row+coln] 
-        where ld and rd are for left and right diagonal respectively"""
-        if ((ld[i - col + N - 1] != 1 and 
-             rd[i + col] != 1) and cl[i] != 1):
-                   
-            """ Place this queen in board[i][col] """
-            board[i][col] = 1
-            ld[i - col + N - 1] = rd[i + col] = cl[i] = 1
-              
-            """ recur to place rest of the queens """
-            if (solveNQUtil(board, col + 1)):
-                return True
-                  
-            """ If placing queen in board[i][col] 
-            doesn't lead to a solution, 
-            then remove queen from board[i][col] """
-            board[i][col] = 0 # BACKTRACK 
-            ld[i - col + N - 1] = rd[i + col] = cl[i] = 0
-              
-            """ If the queen cannot be placed in
-            any row in this column col then return False """
-    return False
-      
-""" This function solves the N Queen problem using 
-Backtracking. It mainly uses solveNQUtil() to 
-solve the problem. It returns False if queens 
-cannot be placed, otherwise, return True and 
-prints placement of queens in the form of 1s. 
-Please note that there may be more than one 
-solutions, this function prints one of the 
-feasible solutions."""
-def solveNQ():
-    board = [[0, 0, 0, 0], 
-             [0, 0, 0, 0],
-             [0, 0, 0, 0],
-             [0, 0, 0, 0]]
-    if (solveNQUtil(board, 0) == False):
-        print("Solution does not exist")
-        return False
-    printSolution(board)
+
+result = []
+ 
+# A utility function to print solution
+ 
+ 
+''' A utility function to check if a queen can
+be placed on board[row][col]. Note that this
+function is called when "col" queens are
+already placed in columns from 0 to col -1.
+So we need to check only left side for
+attacking queens '''
+ 
+ 
+def isSafe(board, row, col):
+ 
+    # Check this row on left side
+    for i in range(col):
+        if (board[row][i]):
+            return False
+ 
+    # Check upper diagonal on left side
+    i = row
+    j = col
+    while i >= 0 and j >= 0:
+        if(board[i][j]):
+            return False
+        i -= 1
+        j -= 1
+ 
+    # Check lower diagonal on left side
+    i = row
+    j = col
+    while j >= 0 and i < 4:
+        if(board[i][j]):
+            return False
+        i = i + 1
+        j = j - 1
+ 
     return True
-      
+ 
+ 
+''' A recursive utility function to solve N
+Queen problem '''
+ 
+ 
+def solveNQUtil(board, col):
+    ''' base case: If all queens are placed
+    then return true '''
+    if (col == 4):
+        v = []
+        for i in board:
+          for j in range(len(i)):
+            if i[j] == 1:
+              v.append(j+1)
+        result.append(v)
+        return True
+ 
+    ''' Consider this column and try placing
+    this queen in all rows one by one '''
+    res = False
+    for i in range(4):
+ 
+        ''' Check if queen can be placed on
+        board[i][col] '''
+        if (isSafe(board, i, col)):
+ 
+            # Place this queen in board[i][col]
+            board[i][col] = 1
+ 
+            # Make result true if any placement
+            # is possible
+            res = solveNQUtil(board, col + 1) or res
+ 
+            ''' If placing queen in board[i][col]
+            doesn't lead to a solution, then
+            remove queen from board[i][col] '''
+            board[i][col] = 0  # BACKTRACK
+ 
+    ''' If queen can not be place in any row in
+        this column col then return false '''
+    return res
+ 
+ 
+''' This function solves the N Queen problem using
+Backtracking. It mainly uses solveNQUtil() to
+solve the problem. It returns false if queens
+cannot be placed, otherwise return true and
+prints placement of queens in the form of 1s.
+Please note that there may be more than one
+solutions, this function prints one of the
+feasible solutions.'''
+ 
+ 
+def solveNQ(n):
+    result.clear()
+    board = [[0 for j in range(n)]
+             for i in range(n)]
+    solveNQUtil(board, 0)
+    result.sort()
+    return result
+ 
+ 
 # Driver Code
-solveNQ() 
+res = solveNQ(N)
+print(res)
