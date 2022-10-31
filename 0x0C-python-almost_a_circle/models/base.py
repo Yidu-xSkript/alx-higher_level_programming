@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """defines Base class"""
-
+import pandas as pd
 
 class Base():
     """manages id attribute in all future classes"""
@@ -38,6 +38,23 @@ class Base():
         with open(filename, 'w') as f:
             f.write(cls.to_json_string(list_dictionaries))
 
+    @classmethod
+    def save_to_file_csv(cls, list_objs):
+        """writes the JSON string representaiton of
+        list of instances who inherits from Base to a csv file"""
+        if list_objs is None:
+            list_objs = []
+        filename = cls.__name__ + ".json"
+        csv_filename = cls.__name__ + ".csv"
+        list_dictionaries = []
+        for instance in list_objs:
+            list_dictionaries.append(instance.to_dictionary())
+        with open(filename, 'w') as f:
+            f.write(cls.to_json_string(list_dictionaries))
+
+        df = pd.read_json(filename)
+        df.to_csv(csv_filename)
+
     @staticmethod
     def from_json_string(json_string):
         """returns the list of the JSON string representation
@@ -63,6 +80,19 @@ class Base():
     def load_from_file(cls):
         """return list of instances from file containing saved JSON string"""
         filename = cls.__name__ + ".json"
+        results = []
+        try:
+            with open(filename, 'r') as f:
+                for instance in cls.from_json_string(f.read()):
+                    results.append(cls.create(**instance))
+        except Exception as err:
+            pass
+        return (results)
+
+    @classmethod
+    def load_from_file_csv(cls):
+        """return list of instances from file containing saved JSON string"""
+        filename = cls.__name__ + ".csv"
         results = []
         try:
             with open(filename, 'r') as f:
