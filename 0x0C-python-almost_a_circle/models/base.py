@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """defines Base class"""
 
+
 class Base():
     """manages id attribute in all future classes"""
     __nb_objects = 0
@@ -70,4 +71,3 @@ class Base():
         except Exception as err:
             pass
         return (results)
-        
