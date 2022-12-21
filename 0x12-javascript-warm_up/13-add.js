@@ -1,4 +1,5 @@
-function add(a, b) {
+#!/usr/bin/node
+'use strict';
+exports.add = function (a, b) {
   return parseInt(a) + parseInt(b);
 }
-module.exports = { add };

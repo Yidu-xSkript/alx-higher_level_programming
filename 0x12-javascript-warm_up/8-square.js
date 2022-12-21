@@ -1,11 +1,15 @@
 #!/usr/bin/node
-const x = process.argv.slice(2)
-if (Number.isInteger(parseInt(x[0]))) {
-  for (let i = 0; i < x[0]; i++) {
-    for (let j = 0; j < x[0]; j++) {
-      console.log('X');
-    }
-  }
-} else {
+'use strict';
+const n = parseInt(process.argv[2]); let s = ''; let x = 0; let y = 0;
+if (isNaN(n)) {
   console.log('Missing size');
+} else {
+  while (x < n) {
+    s += 'X';
+    x++;
+  }
+  while (y < n) {
+    console.log(s);
+    y++;
+  }
 }
