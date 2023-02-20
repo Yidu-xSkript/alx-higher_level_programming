@@ -1,7 +1,7 @@
 const $header = $('header');
-const $div = $('DIV#toggle_header');
+const $toggleBtn = $('DIV#toggle_header');
 
-$div.on('click', () => {
+$toggleBtn.on('click', () => {
   const thisClass = $header.attr('class');
 
   if (thisClass === 'green') {
